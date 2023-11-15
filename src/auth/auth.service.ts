@@ -1,6 +1,11 @@
-import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  UnauthorizedException,
+  forwardRef,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UserEntity } from 'src/user/user.entity';
 import { UserService } from 'src/user/user.service';
@@ -42,10 +47,29 @@ export class AuthService {
     return bcrypt.compare(password, hashedPassword);
   }
 
-  async signJwt(payload: any, options?: JwtSignOptions): Promise<string> {
+  async signJwt(payload: any): Promise<string> {
     return this.jwtService.signAsync(
       { ...payload },
-      { secret: this.configService.get('JWT_SECRET'), ...options },
+      {
+        secret: this.configService.get('JWT_SECRET'),
+        expiresIn: this.configService.get('JWT_EXPIRES_IN'),
+      },
     );
+  }
+
+  async verifyJwt(jwt: string): Promise<{ exp: number }> {
+    if (!jwt) {
+      throw new UnauthorizedException();
+    }
+
+    try {
+      const { exp } = await this.jwtService.verifyAsync(jwt, {
+        secret: this.configService.get('JWT_SECRET'),
+      });
+
+      return { exp };
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
   }
 }

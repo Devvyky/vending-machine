@@ -24,7 +24,7 @@ export class UserService {
   async findByUsername(username: string): Promise<UserEntity> {
     return this.userRepository.findOne({
       where: { username },
-      select: ['id', 'username', 'password'],
+      select: ['id', 'username', 'password', 'role'],
     });
   }
 
@@ -59,5 +59,9 @@ export class UserService {
 
     const token = await this.authService.signJwt({ user });
     return { token };
+  }
+
+  async getUsers(): Promise<UserEntity[]> {
+    return this.userRepository.find();
   }
 }
