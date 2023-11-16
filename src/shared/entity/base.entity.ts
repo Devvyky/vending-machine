@@ -4,12 +4,16 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  Column,
 } from 'typeorm';
 
 @Entity()
 export class BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column({ default: false })
+  isDeleted: boolean;
 
   @CreateDateColumn({ type: 'timestamptz', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
