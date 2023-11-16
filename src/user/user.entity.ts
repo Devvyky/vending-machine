@@ -1,3 +1,4 @@
+import { Role } from 'src/auth/enums/role.enum';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('user')
@@ -16,6 +17,9 @@ export class UserEntity {
   })
   deposit: number;
 
-  @Column()
+  @Column({ type: 'enum', enum: Role, default: Role.Buyer })
   role: string;
+
+  @Column({ default: false })
+  isDeleted: false;
 }

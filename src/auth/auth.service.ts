@@ -57,19 +57,27 @@ export class AuthService {
     );
   }
 
-  async verifyJwt(jwt: string): Promise<{ exp: number }> {
+  async verifyJwt(jwt: string): Promise<{ user: UserEntity; exp: number }> {
     if (!jwt) {
       throw new UnauthorizedException();
     }
 
     try {
-      const { exp } = await this.jwtService.verifyAsync(jwt, {
+      const { user, exp } = await this.jwtService.verifyAsync(jwt, {
         secret: this.configService.get('JWT_SECRET'),
       });
 
-      return { exp };
+      return { user, exp };
     } catch (err) {
       throw new UnauthorizedException();
     }
+  }
+
+  async validateUserId(id: number): Promise<UserEntity> {
+    const user = await this.userService.findUserById(id);
+
+    if (!user) throw new UnauthorizedException();
+
+    return user;
   }
 }

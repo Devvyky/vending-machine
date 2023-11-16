@@ -16,29 +16,30 @@ export class AuthGuard implements CanActivate {
       if (context.getType() !== 'http') {
         return false;
       }
-      const authHeader = context.switchToHttp().getRequest().headers[
-        'authorization'
-      ] as string;
+      const request = context.switchToHttp().getRequest();
+      const authHeader = request.headers['authorization'] as string;
 
       if (!authHeader) return false;
 
       const authHeaderParts = authHeader.split(' ');
-
       if (authHeaderParts.length !== 2) return false;
-
       const [, jwt] = authHeaderParts;
 
-      console.log({ jwt });
-
-      const { exp } = await this.authService.verifyJwt(jwt);
+      const { user, exp } = await this.authService.verifyJwt(jwt);
 
       if (!exp) return false;
 
       const TOKEN_EXP_MS = exp * 1000;
       const isJwtValid = Date.now() < TOKEN_EXP_MS;
-      return isJwtValid;
+
+      const validUser = await this.authService.validateUserId(user.id);
+
+      if (isJwtValid && validUser) {
+        request.user = validUser;
+        return true;
+      }
+      return false;
     } catch (error) {
-      console.log({ error });
       throw new UnauthorizedException();
     }
   }

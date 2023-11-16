@@ -28,6 +28,13 @@ export class UserService {
     });
   }
 
+  async findUserById(id: number): Promise<UserEntity> {
+    return this.userRepository.findOne({
+      where: { id, isDeleted: false },
+      select: ['id', 'username', 'deposit', 'role'],
+    });
+  }
+
   async register(payload: CreateUserDTO): Promise<UserEntity> {
     const { username, password, role } = payload;
 
