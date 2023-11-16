@@ -1,11 +1,9 @@
 import { Role } from 'src/auth/enums/role.enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity } from 'src/shared/entity/base.entity';
+import { Column, Entity } from 'typeorm';
 
 @Entity('user')
-export class UserEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class UserEntity extends BaseEntity {
   @Column({ unique: true })
   username: string;
 
@@ -18,8 +16,5 @@ export class UserEntity {
   deposit: number;
 
   @Column({ type: 'enum', enum: Role, default: Role.Buyer })
-  role: string;
-
-  @Column({ default: false })
-  isDeleted: false;
+  role: Role;
 }
