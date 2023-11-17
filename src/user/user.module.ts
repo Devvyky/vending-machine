@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserService } from './user.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthModule } from 'src/auth/auth.module';
+import { UserRepository } from './repository/user.repository';
 
 @Module({
   imports: [
@@ -12,7 +13,14 @@ import { AuthModule } from 'src/auth/auth.module';
     forwardRef(() => AuthModule),
   ],
   controllers: [UserController],
-  providers: [UserService, JwtService],
+  providers: [
+    UserService,
+    JwtService,
+    {
+      provide: 'UserRepositoryInterface',
+      useClass: UserRepository,
+    },
+  ],
   exports: [UserService],
 })
 export class UserModule {}

@@ -5,31 +5,30 @@ import {
   UnauthorizedException,
   forwardRef,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 import { UserEntity } from './user.entity';
 import { CreateUserDTO } from './user.dtos';
 import { AuthService } from 'src/auth/auth.service';
+import { UserRepositoryInterface } from './interface/user.repository.interface';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    @Inject('UserRepositoryInterface')
+    private readonly userRepository: UserRepositoryInterface,
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
   ) {}
 
   async findByUsername(username: string): Promise<UserEntity> {
-    return this.userRepository.findOne({
+    return this.userRepository.findByCondition({
       where: { username },
       select: ['id', 'username', 'password', 'role'],
     });
   }
 
   async findUserById(id: number): Promise<UserEntity> {
-    return this.userRepository.findOne({
+    return this.userRepository.findByCondition({
       where: { id, isDeleted: false },
       select: ['id', 'username', 'deposit', 'role'],
     });
@@ -69,6 +68,6 @@ export class UserService {
   }
 
   async getUsers(): Promise<UserEntity[]> {
-    return this.userRepository.find();
+    return this.userRepository.findAll();
   }
 }

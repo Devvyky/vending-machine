@@ -5,7 +5,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { JwtGuard } from './jwt.guard';
 import { JwtStrategy } from './jwt-strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { RolesGuard } from './guards/roles.guard';
+import { RolesGuard } from './guards/role.guard';
 
 @Module({
   imports: [

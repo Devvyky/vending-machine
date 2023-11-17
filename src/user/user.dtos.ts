@@ -1,4 +1,5 @@
 import { IsIn, IsNotEmpty, IsString } from 'class-validator';
+import { Role, Roles } from 'src/auth/enums/role.enum';
 
 export class CreateUserDTO {
   @IsNotEmpty()
@@ -11,8 +12,8 @@ export class CreateUserDTO {
 
   @IsNotEmpty()
   @IsString()
-  @IsIn(['seller', 'buyer'])
-  role: string;
+  @IsIn(Roles)
+  role: Role;
 }
 
 export class LoginUserDTO {
