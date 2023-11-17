@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Inject,
   Post,
   Req,
   Res,
@@ -17,7 +18,10 @@ import { RolesGuard } from 'src/auth/guards/role.guard';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    @Inject(UserService)
+    private readonly userService: UserService,
+  ) {}
 
   @Post('')
   async register(@Body() body: CreateUserDTO) {

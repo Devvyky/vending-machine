@@ -1,6 +1,7 @@
-import { Role } from 'src/auth/enums/role.enum';
-import { BaseEntity } from 'src/shared/entity/base.entity';
 import { Column, Entity } from 'typeorm';
+
+import { BaseEntity } from 'src/shared';
+import { Role } from 'src/auth/enums/role.enum';
 
 @Entity('user')
 export class UserEntity extends BaseEntity {
