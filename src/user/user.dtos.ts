@@ -25,3 +25,8 @@ export class LoginUserDTO {
   @IsString()
   password: string;
 }
+
+export class UpdateUserDTO {
+  username: string;
+  password: string;
+}
