@@ -74,7 +74,7 @@ export class AuthService {
     }
   }
 
-  async validateUserId(id: number): Promise<UserEntity> {
+  async validateUserId(id: string): Promise<UserEntity> {
     const user = await this.userService.findUserById(id);
 
     if (!user) throw new UnauthorizedException();

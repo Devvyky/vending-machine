@@ -28,7 +28,7 @@ export class UserService {
     });
   }
 
-  async findUserById(id: number): Promise<UserEntity> {
+  async findUserById(id: string): Promise<UserEntity> {
     return this.userRepository.findByCondition({
       where: { id, isDeleted: false },
       select: ['id', 'username', 'deposit', 'role'],
@@ -72,7 +72,7 @@ export class UserService {
     return this.userRepository.findAll();
   }
 
-  async getUserDetails(id: number): Promise<UserEntity> {
+  async getUserDetails(id: string): Promise<UserEntity> {
     const user = await this.findUserById(id);
 
     if (!user) {
@@ -82,7 +82,7 @@ export class UserService {
     return user;
   }
 
-  async updateUser(id: number, payload: UpdateUserDTO): Promise<UserEntity> {
+  async updateUser(id: string, payload: UpdateUserDTO): Promise<UserEntity> {
     const existingUser = await this.findUserById(id);
 
     if (!existingUser) {
@@ -91,12 +91,10 @@ export class UserService {
 
     const updatedUser = this.userRepository.merge(existingUser, payload);
 
-    console.log({ updatedUser });
-
     return this.userRepository.save(updatedUser);
   }
 
-  async deleteUser(id: number): Promise<UserEntity> {
+  async deleteUser(id: string): Promise<UserEntity> {
     const existingUser = await this.findUserById(id);
 
     if (!existingUser) {

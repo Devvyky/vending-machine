@@ -4,8 +4,6 @@ import {
   Delete,
   Get,
   Inject,
-  Param,
-  ParseIntPipe,
   Patch,
   Post,
   Req,
@@ -56,7 +54,7 @@ export class UserController {
   ) {
     const { username, password } = body;
     try {
-      const data = this.userService.login(username, password);
+      const data = await this.userService.login(username, password);
       res.status(201).json({
         status: 'success',
         data,
@@ -71,7 +69,7 @@ export class UserController {
   @Roles(Role.Seller)
   @UseGuards(AuthGuard, RolesGuard)
   @Get('/list')
-  async getUsers(@Req() req: Request, @Res() res: Response) {
+  async getUsers(@Req() req: Request, @Res() res: Response): Promise<void> {
     try {
       const data = await this.userService.getUsers();
 
@@ -88,11 +86,10 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @Get('')
-  async getUser(@Req() req: Request, @Res() res: Response) {
+  async getUser(@Req() req: Request, @Res() res: Response): Promise<void> {
     try {
       const user = req.user as UserEntity;
 
-      console.log(user);
       const data = await this.userService.getUserDetails(user.id);
 
       res.status(200).json({
@@ -108,15 +105,16 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard)
-  @Patch(':id')
+  @Patch('')
   async updateUser(
     @Req() req: Request,
     @Res() res: Response,
-    @Param('id', new ParseIntPipe()) userId: number,
     @Body() payload: UpdateUserDTO,
-  ) {
+  ): Promise<void> {
+    const user = req.user as UserEntity;
+
     try {
-      const data = await this.userService.updateUser(userId, payload);
+      const data = await this.userService.updateUser(user.id, payload);
 
       res.status(200).json({
         status: 'success',
@@ -131,14 +129,12 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard)
-  @Delete(':id')
-  async deleteUser(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Param('id', new ParseIntPipe()) userId: number,
-  ) {
+  @Delete('')
+  async deleteUser(@Req() req: Request, @Res() res: Response): Promise<void> {
+    const user = req.user as UserEntity;
+
     try {
-      await this.userService.deleteUser(userId);
+      await this.userService.deleteUser(user.id);
 
       res.status(204).json({
         status: 'success',

@@ -9,8 +9,8 @@ import {
 
 @Entity()
 export class BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ default: false })
   isDeleted: boolean;
