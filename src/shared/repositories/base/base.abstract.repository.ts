@@ -9,7 +9,7 @@ import {
 import { BaseInterfaceRepository } from './base.interface.repository';
 
 interface HasId {
-  id: number;
+  id: string;
 }
 
 export abstract class BaseAbstractRepository<T extends HasId>
@@ -18,6 +18,10 @@ export abstract class BaseAbstractRepository<T extends HasId>
   private entity: Repository<T>;
   protected constructor(entity: Repository<T>) {
     this.entity = entity;
+  }
+
+  public merge(entity: T, data: DeepPartial<T>): T {
+    return this.entity.merge(entity, data);
   }
 
   public async save(data: DeepPartial<T>): Promise<T> {

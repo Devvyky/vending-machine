@@ -1,9 +1,13 @@
-import { IsIn, IsNotEmpty, IsString } from 'class-validator';
+import { IsIn, IsNotEmpty, IsString, Matches } from 'class-validator';
 import { Role, Roles } from 'src/auth/enums/role.enum';
 
 export class CreateUserDTO {
   @IsNotEmpty()
   @IsString()
+  @Matches(/^[a-zA-Z0-9]+$/, {
+    message:
+      'Username must contain only alphanumeric characters without spaces.',
+  })
   username: string;
 
   @IsNotEmpty()
@@ -23,5 +27,10 @@ export class LoginUserDTO {
 
   @IsNotEmpty()
   @IsString()
+  password: string;
+}
+
+export class UpdateUserDTO {
+  username: string;
   password: string;
 }
