@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { IsMultipleOf, IsValidNumeric } from 'src/shared/decorators/validators';
-import { UserEntity } from 'src/user/user.entity';
+import { UserEntity } from 'src/user/entity/user.entity';
 
 export class CreateProductDTO {
   @IsNumber()

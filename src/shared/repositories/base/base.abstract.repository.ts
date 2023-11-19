@@ -3,6 +3,7 @@ import {
   FindManyOptions,
   FindOneOptions,
   FindOptionsWhere,
+  QueryRunner,
   Repository,
 } from 'typeorm';
 
@@ -61,5 +62,9 @@ export abstract class BaseAbstractRepository<T extends HasId>
   }
   public async preload(entityLike: DeepPartial<T>): Promise<T> {
     return await this.entity.preload(entityLike);
+  }
+
+  public async queryRunner(): Promise<QueryRunner> {
+    return this.entity.queryRunner;
   }
 }

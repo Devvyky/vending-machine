@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Inject,
   Injectable,
@@ -7,18 +8,26 @@ import {
   forwardRef,
 } from '@nestjs/common';
 
-import { UserEntity } from './user.entity';
-import { CreateUserDTO, UpdateUserDTO } from './user.dtos';
+import { UserEntity } from './entity/user.entity';
+import { CreateUserDTO, DepositDTO, UpdateUserDTO } from './user.dtos';
 import { AuthService } from 'src/auth/auth.service';
 import { UserRepositoryInterface } from './interface/user.repository.interface';
+import { DepositRepositoryInterface } from './interface/deposit.repository.interface';
+import { DepositEntity } from './entity/deposit.entity';
+import { InjectEntityManager } from '@nestjs/typeorm';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class UserService {
   constructor(
     @Inject('UserRepositoryInterface')
     private readonly userRepository: UserRepositoryInterface,
+    @Inject('DepositRepositoryInterface')
+    private readonly depositRepository: DepositRepositoryInterface,
     @Inject(forwardRef(() => AuthService))
     private readonly authService: AuthService,
+    @InjectEntityManager()
+    private readonly entityManager: EntityManager,
   ) {}
 
   async findByUsername(username: string): Promise<UserEntity> {
@@ -107,5 +116,30 @@ export class UserService {
     });
 
     return this.userRepository.save(updatedUser);
+  }
+
+  async deposit(payload: DepositDTO): Promise<void> {
+    const user = await this.findUserById(payload.userId);
+
+    if (!user) {
+      throw new BadRequestException();
+    }
+
+    return this.entityManager.transaction(
+      async (transactionManager: EntityManager) => {
+        try {
+          const updatedUser = this.userRepository.merge(user, {
+            deposit: user.deposit + payload.amount,
+          });
+
+          await transactionManager.save(DepositEntity, payload);
+          await transactionManager.save(UserEntity, updatedUser);
+        } catch (err) {
+          throw new BadRequestException(
+            'An error occured during deposit, please try again',
+          );
+        }
+      },
+    );
   }
 }

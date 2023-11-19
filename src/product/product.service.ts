@@ -7,7 +7,7 @@ import {
 import { ProductRepositoryInterface } from './interface/product.repository.interface';
 import { ProductEntity } from './product.entity';
 import { CreateProductDTO, UpdateProductDTO } from './product.dtos';
-import { UserEntity } from 'src/user/user.entity';
+import { UserEntity } from 'src/user/entity/user.entity';
 
 @Injectable()
 export class ProductService {
