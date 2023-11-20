@@ -1,9 +1,9 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
 import { IsMultipleOf, IsValidNumeric } from 'src/shared/decorators/validators';
 import { UserEntity } from 'src/user/entity/user.entity';
 
 export class CreateProductDTO {
-  @IsNumber()
+  @IsPositive()
   @IsNotEmpty()
   amountAvailable: number;
 
@@ -23,11 +23,11 @@ export class CreateProductDTO {
 }
 
 export class UpdateProductDTO {
-  @IsNumber()
+  @IsPositive()
   @IsNotEmpty()
   amountAvailable: number;
 
-  @IsNumber()
+  @IsPositive()
   @IsNotEmpty()
   @IsMultipleOf(5, { message: 'Cost must be in multiples of 5' })
   @IsValidNumeric(10, 2)
@@ -36,4 +36,10 @@ export class UpdateProductDTO {
   @IsString()
   @IsNotEmpty()
   productName: string;
+}
+
+export class BuyProductDTO {
+  @IsPositive()
+  @IsNotEmpty()
+  quantity: number;
 }

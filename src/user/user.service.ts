@@ -136,7 +136,7 @@ export class UserService {
           await transactionManager.save(UserEntity, updatedUser);
         } catch (err) {
           throw new BadRequestException(
-            'An error occured during deposit, please try again',
+            'An error occurred during deposit, please try again',
           );
         }
       },

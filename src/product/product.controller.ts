@@ -13,7 +13,11 @@ import {
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { CreateProductDTO, UpdateProductDTO } from './product.dtos';
+import {
+  BuyProductDTO,
+  CreateProductDTO,
+  UpdateProductDTO,
+} from './product.dtos';
 import { Request, Response } from 'express';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { Role } from 'src/auth/enums/role.enum';
@@ -118,6 +122,32 @@ export class ProductController {
 
       res.status(204).json({
         status: 'success',
+      });
+    } catch (error) {
+      res.status(error?.statusCode || 500).json({
+        status: 'fail',
+        error: error.message,
+      });
+    }
+  }
+
+  @Roles(Role.Buyer)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Post(':id/buy')
+  async buyProduct(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Param('id') id: string,
+    @Body() body: BuyProductDTO,
+  ): Promise<void> {
+    const user = req.user as UserEntity;
+
+    try {
+      const data = await this.productService.buyProduct(user, id, body);
+
+      res.status(200).json({
+        status: 'success',
+        data,
       });
     } catch (error) {
       res.status(error?.statusCode || 500).json({
