@@ -4,22 +4,20 @@ import { UserModule } from 'src/user/user.module';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { JwtGuard } from './jwt.guard';
 import { JwtStrategy } from './jwt-strategy';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RolesGuard } from './guards/role.guard';
+// import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
     forwardRef(() => UserModule),
     JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
+      useFactory: () => ({
         global: true,
-        secret: configService.get('JWT_SECRET'),
+        secret: process.env.JWT_SECRET,
         signOptions: {
-          expiresIn: configService.get('JWT_EXPIRES_IN'),
+          expiresIn: process.env.JWT_EXPIRES_IN,
         },
       }),
-      inject: [ConfigService],
     }),
   ],
   providers: [AuthService, JwtService, JwtGuard, JwtStrategy, RolesGuard],

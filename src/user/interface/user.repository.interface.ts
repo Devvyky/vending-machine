@@ -1,5 +1,5 @@
 import { BaseInterfaceRepository } from 'src/shared';
-import { UserEntity } from '../user.entity';
+import { UserEntity } from '../entity/user.entity';
 
 export interface UserRepositoryInterface
   extends BaseInterfaceRepository<UserEntity> {}

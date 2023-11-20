@@ -11,13 +11,18 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from './user.dtos';
+import {
+  CreateUserDTO,
+  DepositDTO,
+  LoginUserDTO,
+  UpdateUserDTO,
+} from './user.dtos';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { Role } from 'src/auth/enums/role.enum';
 import { Request, Response } from 'express';
 import { RolesGuard } from 'src/auth/guards/role.guard';
-import { UserEntity } from './user.entity';
+import { UserEntity } from './entity/user.entity';
 
 @Controller('user')
 export class UserController {
@@ -33,7 +38,7 @@ export class UserController {
     @Body() body: CreateUserDTO,
   ) {
     try {
-      const data = this.userService.register(body);
+      const data = await this.userService.register(body);
 
       res.status(201).json({
         status: 'success',
@@ -137,6 +142,33 @@ export class UserController {
       await this.userService.deleteUser(user.id);
 
       res.status(204).json({
+        status: 'success',
+      });
+    } catch (error) {
+      res.status(error?.statusCode || 500).json({
+        status: 'fail',
+        error: error.message,
+      });
+    }
+  }
+
+  @Roles(Role.Buyer)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Post('deposit')
+  async deposit(
+    @Req() req: Request,
+    @Res() res: Response,
+    @Body() body: DepositDTO,
+  ) {
+    try {
+      const user = req.user as UserEntity;
+
+      body.user = user;
+      body.userId = user.id;
+
+      await this.userService.deposit(body);
+
+      res.status(201).json({
         status: 'success',
       });
     } catch (error) {

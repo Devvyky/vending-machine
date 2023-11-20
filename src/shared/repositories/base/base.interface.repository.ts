@@ -1,4 +1,9 @@
-import { DeepPartial, FindManyOptions, FindOneOptions } from 'typeorm';
+import {
+  DeepPartial,
+  FindManyOptions,
+  FindOneOptions,
+  QueryRunner,
+} from 'typeorm';
 
 export interface BaseInterfaceRepository<T> {
   merge(entity: T, data: DeepPartial<T>): T;
@@ -12,4 +17,5 @@ export interface BaseInterfaceRepository<T> {
   remove(data: T): Promise<T>;
   findWithRelations(relations: FindManyOptions<T>): Promise<T[]>;
   preload(entityLike: DeepPartial<T>): Promise<T>;
+  queryRunner(): Promise<QueryRunner>;
 }
