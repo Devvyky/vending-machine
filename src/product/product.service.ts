@@ -1,6 +1,8 @@
 import {
   BadRequestException,
   ForbiddenException,
+  HttpException,
+  HttpStatus,
   Inject,
   Injectable,
   NotFoundException,
@@ -121,8 +123,9 @@ export class ProductService {
     const totalCost = payload.quantity * product.cost;
 
     if (totalCost > user.deposit) {
-      throw new BadRequestException(
+      throw new HttpException(
         'Insufficient funds to purchase this product',
+        HttpStatus.PAYMENT_REQUIRED,
       );
     }
 

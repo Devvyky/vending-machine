@@ -85,7 +85,7 @@ export class UserService {
     const user = await this.findUserById(id);
 
     if (!user) {
-      throw new NotFoundException();
+      throw new NotFoundException('This user no longer exists');
     }
 
     return user;
@@ -95,7 +95,7 @@ export class UserService {
     const existingUser = await this.findUserById(id);
 
     if (!existingUser) {
-      throw new NotFoundException();
+      throw new NotFoundException('This user no longer exists');
     }
 
     const updatedUser = this.userRepository.merge(existingUser, payload);
@@ -107,7 +107,7 @@ export class UserService {
     const existingUser = await this.findUserById(id);
 
     if (!existingUser) {
-      throw new NotFoundException();
+      throw new NotFoundException('This user no longer exists');
     }
 
     const updatedUser = this.userRepository.merge(existingUser, {
@@ -122,7 +122,7 @@ export class UserService {
     const user = await this.findUserById(payload.userId);
 
     if (!user) {
-      throw new BadRequestException();
+      throw new NotFoundException('This user no longer exists');
     }
 
     return this.entityManager.transaction(
@@ -141,5 +141,19 @@ export class UserService {
         }
       },
     );
+  }
+
+  async resetDeposit(id: string): Promise<UserEntity> {
+    const existingUser = await this.findUserById(id);
+
+    if (!existingUser) {
+      throw new NotFoundException('This user no longer exists');
+    }
+
+    const updatedUser = this.userRepository.merge(existingUser, {
+      deposit: 0,
+    });
+
+    return this.userRepository.save(updatedUser);
   }
 }

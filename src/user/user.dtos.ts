@@ -7,7 +7,7 @@ export class CreateUserDTO {
   @IsString()
   @Matches(/^[a-zA-Z0-9]+$/, {
     message:
-      'Username must contain only alphanumeric characters without spaces.',
+      'username must contain only alphanumeric characters without spaces.',
   })
   username: string;
 
@@ -32,8 +32,11 @@ export class LoginUserDTO {
 }
 
 export class UpdateUserDTO {
+  @Matches(/^[a-zA-Z0-9]+$/, {
+    message:
+      'username must contain only alphanumeric characters without spaces.',
+  })
   username: string;
-  password: string;
 }
 
 export class DepositDTO {
