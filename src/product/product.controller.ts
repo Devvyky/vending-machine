@@ -48,8 +48,6 @@ export class ProductController {
         sellerId: user.id,
       };
 
-      console.log(payload);
-
       const data = await this.productService.create(payload);
 
       res.status(201).json({
@@ -57,8 +55,8 @@ export class ProductController {
         data,
       });
     } catch (error) {
-      res.status(error?.statusCode || 500).json({
-        error: error.message,
+      res.status(error?.status || 500).json({
+        message: error.message,
       });
     }
   }
@@ -75,8 +73,8 @@ export class ProductController {
         data,
       });
     } catch (error) {
-      res.status(error?.statusCode || 500).json({
-        error: error.message,
+      res.status(error?.status || 500).json({
+        message: error.message,
       });
     }
   }
@@ -100,9 +98,9 @@ export class ProductController {
         data,
       });
     } catch (error) {
-      res.status(error?.statusCode || 500).json({
+      res.status(error?.status || 500).json({
         status: 'fail',
-        error: error.message,
+        message: error.message,
       });
     }
   }
@@ -124,9 +122,9 @@ export class ProductController {
         status: 'success',
       });
     } catch (error) {
-      res.status(error?.statusCode || 500).json({
+      res.status(error?.status || 500).json({
         status: 'fail',
-        error: error.message,
+        message: error.message,
       });
     }
   }
@@ -150,9 +148,9 @@ export class ProductController {
         data,
       });
     } catch (error) {
-      res.status(error?.statusCode || 500).json({
+      res.status(error?.status || 500).json({
         status: 'fail',
-        error: error.message,
+        message: error.message,
       });
     }
   }

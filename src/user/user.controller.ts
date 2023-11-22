@@ -45,8 +45,11 @@ export class UserController {
         data,
       });
     } catch (error) {
-      res.status(error?.statusCode || 500).json({
-        error: error.message,
+      // TODO: Implement Global Error Handling Exception
+      const isDuplicateErr = error?.code === '23505';
+      res.status(isDuplicateErr ? 409 : error?.status || 500).json({
+        status: 'fail',
+        message: isDuplicateErr ? 'Username already taken' : error?.message,
       });
     }
   }
@@ -65,8 +68,9 @@ export class UserController {
         data,
       });
     } catch (error) {
-      res.status(error?.statusCode || 500).json({
-        error: error.message,
+      res.status(error?.status || 500).json({
+        status: 'fail',
+        message: error.message,
       });
     }
   }
@@ -83,8 +87,8 @@ export class UserController {
         data,
       });
     } catch (error) {
-      res.status(error?.statusCode || 500).json({
-        error: error.message,
+      res.status(error?.status || 500).json({
+        message: error.message,
       });
     }
   }
@@ -102,9 +106,9 @@ export class UserController {
         data,
       });
     } catch (error) {
-      res.status(error?.statusCode || 500).json({
+      res.status(error?.status || 500).json({
         status: 'fail',
-        error: error.message,
+        message: error.message,
       });
     }
   }
@@ -126,9 +130,11 @@ export class UserController {
         data,
       });
     } catch (error) {
-      res.status(error?.statusCode || 500).json({
+      // TODO: Implement Global Error Handling Exception
+      const isDuplicateErr = error?.code === '23505';
+      res.status(isDuplicateErr ? 409 : error?.status || 500).json({
         status: 'fail',
-        error: error.message,
+        message: isDuplicateErr ? 'username already taken' : error?.message,
       });
     }
   }
@@ -145,9 +151,9 @@ export class UserController {
         status: 'success',
       });
     } catch (error) {
-      res.status(error?.statusCode || 500).json({
+      res.status(error?.status || 500).json({
         status: 'fail',
-        error: error.message,
+        message: error?.message,
       });
     }
   }
@@ -168,13 +174,33 @@ export class UserController {
 
       await this.userService.deposit(body);
 
-      res.status(201).json({
+      res.status(200).json({
         status: 'success',
       });
     } catch (error) {
-      res.status(error?.statusCode || 500).json({
+      res.status(error?.status || 500).json({
         status: 'fail',
-        error: error.message,
+        message: error.message,
+      });
+    }
+  }
+
+  @Roles(Role.Buyer)
+  @UseGuards(AuthGuard, RolesGuard)
+  @Patch('deposit/reset')
+  async resetDeposit(@Req() req: Request, @Res() res: Response) {
+    try {
+      const user = req.user as UserEntity;
+
+      await this.userService.resetDeposit(user.id);
+
+      res.status(200).json({
+        status: 'success',
+      });
+    } catch (error) {
+      res.status(error?.status || 500).json({
+        status: 'fail',
+        message: error.message,
       });
     }
   }
